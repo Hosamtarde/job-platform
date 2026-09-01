@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from './config/configuration';
 import { validationSchema } from './config/validation.schema';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { validationSchema } from './config/validation.schema';
       isGlobal: true,
       load: [configuration],
       validationSchema,
+      
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -24,7 +26,9 @@ import { validationSchema } from './config/validation.schema';
         synchronize: false,
         logging: config.get<string>('NODE_ENV') === 'development',
       }),
-    }),
+      
+    }),    
+    AuthModule,
   ],
 })
 export class AppModule {}
