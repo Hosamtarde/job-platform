@@ -13,7 +13,9 @@ import { LoginDto } from './dto/login.dto';
 import { Public, CurrentUser } from '../../common/decorators';
 import { JwtRefreshGuard } from '../../common/guards';
 import { User } from '../users/entities/user.entity';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -39,12 +41,14 @@ export class AuthController {
     return this.authService.refresh(user.sub, user.refreshToken);
   }
 
+  @ApiBearerAuth() 
   @HttpCode(HttpStatus.OK)
   @Post('logout')
   logout(@CurrentUser('id') userId: string) {
     return this.authService.logout(userId);
   }
 
+  @ApiBearerAuth()
   @Get('me')
   getProfile(@CurrentUser() user: User) {
     return {
